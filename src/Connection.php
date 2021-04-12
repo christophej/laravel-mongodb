@@ -303,20 +303,7 @@ class Connection extends BaseConnection
      * @return bool
      */
     public function statement($query, $bindings = []) {
-        return true;
-        return $this->run($query, $bindings, function ($query, $bindings) {
-            if ($this->pretending()) {
-                return true;
-            }
-
-            $statement = $this->prepare($query);
-
-            $this->bindValues($statement, $this->prepareBindings($bindings));
-
-            $this->recordsHaveBeenModified();
-
-            return $statement->execute();
-        });
+        return true; //always pretending.
     }
 
     /**
