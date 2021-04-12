@@ -18,6 +18,6 @@ class Processor extends BaseProcessor
      */
     public function processInsertGetId(Builder $query, $sql, $values, $sequence = null)
     {
-        return $query->insertGetId($values);
+        return $query->getConnection()->insert($values);
     }
 }
