@@ -131,7 +131,7 @@ class BelongsToMany extends EloquentBelongsToMany
             $current = $ids->modelKeys();
         }
 
-        $records = $this->formatSyncList($ids);
+        $records = $this->formatRecordsList($this->parseIds($ids));
 
         $current = Arr::wrap($current);
 
