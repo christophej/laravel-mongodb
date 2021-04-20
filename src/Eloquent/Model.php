@@ -429,6 +429,14 @@ abstract class Model extends BaseModel
     {
         return $key;
     }
+    
+    /**
+     * @inheritdoc
+     */
+    public function qualifyColumn($column)
+    {
+        return $column;
+    }
 
     /**
      * Get the queueable relationships for the entity.
