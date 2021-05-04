@@ -29,22 +29,27 @@ class BelongsToMany extends EloquentBelongsToMany
     }
 
     /**
-     * @inheritdoc
+     * Get the pivot attributes from a model.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @return array
      */
-    protected function hydratePivotRelation(array $models)
+    protected function migratePivotAttributes(Model $model)
     {
-        foreach ($models as $model) {
-            $keyToUse = $this->getTable() == $model->getTable() ? $this->getForeignKey() : $this->getRelatedKey();
-            $pcontent = $model->getAttributes()[$keyToUse];
-            $parentKey = $this->parent->getKey();
-            $pcontent = array_values(array_filter($pcontent, function($item) use ($parentKey) {
-                return $item['_id'] == $parentKey;
-            }));
+        $keyToUse = $this->getTable() == $model->getTable() ? $this->getForeignKey() : $this->getRelatedKey();
+        $pivotKey = $this->parent->{$this->getQualifiedParentKeyName()};
+        $pivots = collect($model->{$keyToUse});
 
-            $model->setRelation($this->accessor, $this->newExistingPivot(
-                is_string($pcontent[0]) ? ['_id' => $pcontent] : $pcontent[0]
-            ));
+        if (empty($pivotKey)) {
+            return $pivots->first();
         }
+
+        $pivot = $pivots->firstWhere(
+            $this->parentKey, 
+            $pivotKey
+        );
+        
+        return $pivot;
     }
 
     /**
