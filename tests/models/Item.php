@@ -10,7 +10,7 @@ use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
  * Class Item.
  * @property \Carbon\Carbon $created_at
  */
-class Item extends Eloquent
+class Item extends Base
 {
     protected $connection = 'mongodb';
     protected $collection = 'items';

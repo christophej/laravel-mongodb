@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 
-class Photo extends Eloquent
+class Photo extends Base
 {
     protected $connection = 'mongodb';
     protected $collection = 'photos';

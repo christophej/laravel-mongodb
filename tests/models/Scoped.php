@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Jenssegers\Mongodb\Eloquent\Builder;
 use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 
-class Scoped extends Eloquent
+class Scoped extends Base
 {
     protected $connection = 'mongodb';
     protected $collection = 'scoped';

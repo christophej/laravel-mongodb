@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 
-class Location extends Eloquent
+class Location extends Base
 {
     protected $connection = 'mongodb';
     protected $collection = 'locations';

@@ -8,7 +8,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Jenssegers\Mongodb\Eloquent\HybridRelations;
 
-class MysqlUser extends Eloquent
+class MysqlUser extends Base
 {
     use HybridRelations;
 
