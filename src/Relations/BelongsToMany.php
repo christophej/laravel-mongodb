@@ -45,7 +45,7 @@ class BelongsToMany extends EloquentBelongsToMany
         }
 
         $pivot = $pivots->firstWhere(
-            $this->parentKey, 
+            "_id", 
             $pivotKey
         );
         
