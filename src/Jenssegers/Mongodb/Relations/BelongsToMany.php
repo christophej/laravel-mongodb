@@ -290,7 +290,7 @@ class BelongsToMany extends EloquentBelongsToMany
 
         // Remove the relation to the parent.
         $query->pull($this->foreignPivotKey, $this->parent->getKey());
-        $query->pull($this->foreignPivotKey, [$this->parentKey => $this->parent->getKey()]);
+        $query->pull($this->foreignPivotKey, ['_id' => $this->parent->getKey()]);
 
         if ($touch) {
             $this->touchIfTouching();
