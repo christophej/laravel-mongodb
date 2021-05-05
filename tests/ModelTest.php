@@ -590,16 +590,6 @@ class ModelTest extends TestCase
         $this->assertLessThan(1, $fakeDate->diffInSeconds($item->created_at));
     }
 
-    public function testIdAttribute(): void
-    {
-        /** @var User $user */
-        $user = User::create(['name' => 'John Doe']);
-        $this->assertEquals($user->_id, $user->_id);
-
-        $user = User::create(['_id' => 'custom_id', 'name' => 'John Doe']);
-        $this->assertNotEquals($user->_id, $user->_id);
-    }
-
     public function testPushPull(): void
     {
         /** @var User $user */
