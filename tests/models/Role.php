@@ -4,7 +4,7 @@ declare(strict_types=1);
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 
-class Role extends Eloquent
+class Role extends Base
 {
     protected $connection = 'mongodb';
     protected $collection = 'roles';

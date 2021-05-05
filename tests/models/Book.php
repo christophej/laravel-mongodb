@@ -10,7 +10,7 @@ use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
  * @property string $author
  * @property array $chapters
  */
-class Book extends Eloquent
+class Book extends Base
 {
     protected $connection = 'mongodb';
     protected $collection = 'books';
