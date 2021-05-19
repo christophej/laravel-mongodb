@@ -20,7 +20,7 @@ use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class User extends Eloquent implements AuthenticatableContract, CanResetPasswordContract
+class User extends Base implements AuthenticatableContract, CanResetPasswordContract
 {
     use Authenticatable, CanResetPassword, HybridRelations, Notifiable;
 
@@ -60,7 +60,7 @@ class User extends Eloquent implements AuthenticatableContract, CanResetPassword
 
     public function groups()
     {
-        return $this->belongsToMany('Group', 'groups', 'users', 'groups', '_id', '_id', 'groups');
+        return $this->belongsToMany('Group');
     }
 
     public function photos()
