@@ -15,9 +15,10 @@ use MongoDB\BSON\Binary;
 use MongoDB\BSON\ObjectID;
 use MongoDB\BSON\UTCDateTime;
 
+
 abstract class Model extends BaseModel
 {
-    use HybridRelations, EmbedsRelations;
+    use HybridRelations, EmbedsRelations, PivotEventTrait;
 
     /**
      * The collection associated with the model.
