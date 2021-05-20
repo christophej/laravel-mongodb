@@ -130,7 +130,7 @@ class BelongsToMany extends EloquentBelongsToMany
      */
     public function sync($ids, $detaching = true)
     {
-        if (false === $this->parent->fireModelEvent('pivotSyncing', true, $this->getRelationName(), $ids)) {
+        if (false === $this->parent->fireModelEvent('pivotSyncing', true)) {
             return false;
         }
 
@@ -192,7 +192,7 @@ class BelongsToMany extends EloquentBelongsToMany
             $this->touchIfTouching();
         }
 
-        $this->parent->fireModelEvent('pivotSynced', false, $this->getRelationName(), $ids);
+        $this->parent->fireModelEvent('pivotSynced', false);
 
         return $changes;
     }
@@ -202,7 +202,7 @@ class BelongsToMany extends EloquentBelongsToMany
      */
     public function updateExistingPivot($id, array $attributes, $touch = true)
     {   
-        if (false === $this->parent->fireModelEvent('pivotUpdating', true, $this->getRelationName(), $id)) {
+        if (false === $this->parent->fireModelEvent('pivotUpdating', true)) {
             return false;
         }
 
@@ -231,7 +231,7 @@ class BelongsToMany extends EloquentBelongsToMany
         $this->parent->pull($this->getRelatedKey(), $filter);
         $this->parent->push($this->getRelatedKey(), $pivot_x, true);
 
-        $this->parent->fireModelEvent('pivotUpdated', false, $this->getRelationName(), $id);
+        $this->parent->fireModelEvent('pivotUpdated', false);
     }
 
     /**
@@ -239,7 +239,7 @@ class BelongsToMany extends EloquentBelongsToMany
      */
     public function attach($id, array $attributes = [], $touch = true)
     {   
-        if (false === $this->parent->fireModelEvent('pivotAttaching', true, $this->getRelationName(), $id)) {
+        if (false === $this->parent->fireModelEvent('pivotAttaching', true)) {
             return false;
         }
 
@@ -278,7 +278,7 @@ class BelongsToMany extends EloquentBelongsToMany
             $this->touchIfTouching();
         }
 
-        $this->parent->fireModelEvent('pivotAttached', false, $this->getRelationName(), $id);
+        $this->parent->fireModelEvent('pivotAttached', false);
     }
 
     /**
@@ -286,7 +286,7 @@ class BelongsToMany extends EloquentBelongsToMany
      */
     public function detach($ids = [], $touch = true)
     {   
-        if (false === $this->parent->fireModelEvent('pivotDetaching', true, $this->getRelationName(), $ids)) {
+        if (false === $this->parent->fireModelEvent('pivotDetaching', true)) {
             return false;
         }
 
@@ -318,7 +318,7 @@ class BelongsToMany extends EloquentBelongsToMany
             $this->touchIfTouching();
         }
 
-        $this->parent->fireModelEvent('pivotDetached', false, $this->getRelationName(), $ids);
+        $this->parent->fireModelEvent('pivotDetached', false);
 
         return count($ids);
     }

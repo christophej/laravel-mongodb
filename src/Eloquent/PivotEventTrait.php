@@ -74,7 +74,7 @@
          *
          * @return mixed
          */
-        public function fireModelEvent($event, $halt = true, $relationName = null, $ids = [], $idsAttributes = [])
+        public function fireModelEvent($event, $halt = true)
         {
             if (!isset(static::$dispatcher)) {
                 return true;
