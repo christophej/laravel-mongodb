@@ -93,10 +93,8 @@
                 return false;
             }
 
-            $payload = [$this, $relationName, $ids, $idsAttributes];
-
-            return !empty($result) ? $result : static::$dispatcher->{$method}(
-                "eloquent.{$event}: ".static::class, $payload
+            return ! empty($result) ? $result : static::$dispatcher->{$method}(
+                "eloquent.{$event}: ".static::class, $this
             );
         }
     }
