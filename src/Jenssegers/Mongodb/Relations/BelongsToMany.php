@@ -130,6 +130,10 @@ class BelongsToMany extends EloquentBelongsToMany
      */
     public function sync($ids, $detaching = true)
     {
+        if (false === $this->parent->fireModelEvent('pivotSyncing', true)) {
+            return false;
+        }
+
         $changes = [
             'attached' => [],
             'detached' => [],
@@ -188,6 +192,8 @@ class BelongsToMany extends EloquentBelongsToMany
             $this->touchIfTouching();
         }
 
+        $this->parent->fireModelEvent('pivotSynced', false);
+
         return $changes;
     }
 
@@ -195,7 +201,11 @@ class BelongsToMany extends EloquentBelongsToMany
      * @inheritdoc
      */
     public function updateExistingPivot($id, array $attributes, $touch = true)
-    {
+    {   
+        if (false === $this->parent->fireModelEvent('pivotUpdating', true)) {
+            return false;
+        }
+
         if ($id instanceof Model) {
             $model = $id;
             $id = $model->getKey();
@@ -220,13 +230,19 @@ class BelongsToMany extends EloquentBelongsToMany
         $this->parent->pull($this->getRelatedKey(), $id);
         $this->parent->pull($this->getRelatedKey(), $filter);
         $this->parent->push($this->getRelatedKey(), $pivot_x, true);
+
+        $this->parent->fireModelEvent('pivotUpdated', false);
     }
 
     /**
      * @inheritdoc
      */
     public function attach($id, array $attributes = [], $touch = true)
-    {
+    {   
+        if (false === $this->parent->fireModelEvent('pivotAttaching', true)) {
+            return false;
+        }
+
         if ($id instanceof Model) {
             $model = $id;
 
@@ -261,13 +277,19 @@ class BelongsToMany extends EloquentBelongsToMany
         if ($touch) {
             $this->touchIfTouching();
         }
+
+        $this->parent->fireModelEvent('pivotAttached', false);
     }
 
     /**
      * @inheritdoc
      */
     public function detach($ids = [], $touch = true)
-    {
+    {   
+        if (false === $this->parent->fireModelEvent('pivotDetaching', true)) {
+            return false;
+        }
+
         if ($ids instanceof Model) {
             $ids = (array) $ids->getKey();
         }
@@ -295,6 +317,8 @@ class BelongsToMany extends EloquentBelongsToMany
         if ($touch) {
             $this->touchIfTouching();
         }
+
+        $this->parent->fireModelEvent('pivotDetached', false);
 
         return count($ids);
     }
