@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 
 class Group extends Base
 {

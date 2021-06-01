@@ -45,10 +45,10 @@ class BelongsToMany extends EloquentBelongsToMany
         }
 
         $pivot = $pivots->firstWhere(
-            "_id", 
+            '_id',
             $pivotKey
         );
-        
+
         return $pivot;
     }
 
@@ -201,7 +201,7 @@ class BelongsToMany extends EloquentBelongsToMany
      * @inheritdoc
      */
     public function updateExistingPivot($id, array $attributes, $touch = true)
-    {   
+    {
         if (false === $this->parent->fireModelEvent('pivotUpdating', true)) {
             return false;
         }
@@ -212,7 +212,7 @@ class BelongsToMany extends EloquentBelongsToMany
         } else {
             if ($id instanceof Collection) {
                 $id = $id->modelKeys();
-        }
+            }
 
             $related = $this->newRelatedQuery()->whereIn($this->related->getKeyName(), (array) $id);
             $filter = [$this->parentKey => $this->parent->getKey()];
@@ -238,7 +238,7 @@ class BelongsToMany extends EloquentBelongsToMany
      * @inheritdoc
      */
     public function attach($id, array $attributes = [], $touch = true)
-    {   
+    {
         if (false === $this->parent->fireModelEvent('pivotAttaching', true)) {
             return false;
         }
@@ -285,7 +285,7 @@ class BelongsToMany extends EloquentBelongsToMany
      * @inheritdoc
      */
     public function detach($ids = [], $touch = true)
-    {   
+    {
         if (false === $this->parent->fireModelEvent('pivotDetaching', true)) {
             return false;
         }

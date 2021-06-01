@@ -15,7 +15,6 @@ use MongoDB\BSON\Binary;
 use MongoDB\BSON\ObjectID;
 use MongoDB\BSON\UTCDateTime;
 
-
 abstract class Model extends BaseModel
 {
     use HybridRelations, EmbedsRelations, PivotEventTrait;
@@ -430,7 +429,7 @@ abstract class Model extends BaseModel
     {
         return $key;
     }
-    
+
     /**
      * @inheritdoc
      */

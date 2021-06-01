@@ -100,6 +100,7 @@ class BelongsTo extends \Illuminate\Database\Eloquent\Relations\BelongsTo
                 $model->setRelation($relation, $dictionary[(string) $model->{$foreign}]);
             }
         }
+
         return $models;
     }
 }

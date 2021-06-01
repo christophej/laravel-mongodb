@@ -1,12 +1,9 @@
 <?php
 
-    namespace Jenssegers\Mongodb\Eloquent;
+namespace Jenssegers\Mongodb\Eloquent;
 
-    /**
-     * @package PivotEventTrait
-     */
-
-    trait PivotEventTrait {
+    trait PivotEventTrait
+    {
         /**
          * Get the observable event names.
          *
@@ -76,7 +73,7 @@
          */
         public function fireModelEvent($event, $halt = true)
         {
-            if (!isset(static::$dispatcher)) {
+            if (! isset(static::$dispatcher)) {
                 return true;
             }
 

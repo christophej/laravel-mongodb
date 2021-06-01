@@ -7,7 +7,7 @@ use Illuminate\Database\Query\Processors\Processor as BaseProcessor;
 
 class Processor extends BaseProcessor
 {
-	/**
+    /**
      * Process an  "insert get ID" query.
      *
      * @param  \Illuminate\Database\Query\Builder  $query

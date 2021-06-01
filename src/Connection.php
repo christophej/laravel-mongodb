@@ -232,7 +232,7 @@ class Connection extends BaseConnection
     }
 
     /**
-     * create a session and start a transaction in session
+     * create a session and start a transaction in session.
      *
      * In version 4.0, MongoDB supports multi-document transactions on replica sets.
      * In version 4.2, MongoDB introduces distributed transactions, which adds support for multi-document transactions on sharded clusters and incorporates the existing support for multi-document transactions on replica sets.
@@ -240,20 +240,22 @@ class Connection extends BaseConnection
      *
      * @see https://docs.mongodb.com/manual/core/transactions/
      */
-    public function beginTransaction() {
+    public function beginTransaction()
+    {
         $this->session_key = uniqid();
         $this->sessions[$this->session_key] = $this->connection->startSession();
         $this->sessions[$this->session_key]->startTransaction([
             'readPreference' => new ReadPreference(ReadPreference::RP_PRIMARY),
             'writeConcern' => new WriteConcern(1),
-            'readConcern' => new ReadConcern(ReadConcern::LOCAL)
+            'readConcern' => new ReadConcern(ReadConcern::LOCAL),
         ]);
     }
 
     /**
-     * commit transaction in this session and close this session
+     * commit transaction in this session and close this session.
      */
-    public function commit() {
+    public function commit()
+    {
         if ($session = $this->getSession()) {
             $session->commitTransaction();
             $this->setLastSession();
@@ -261,9 +263,10 @@ class Connection extends BaseConnection
     }
 
     /**
-     * rollback transaction in this session and close this session
+     * rollback transaction in this session and close this session.
      */
-    public function rollBack($toLevel = null) {
+    public function rollBack($toLevel = null)
+    {
         if ($session = $this->getSession()) {
             $session->abortTransaction();
             $this->setLastSession();
@@ -272,9 +275,10 @@ class Connection extends BaseConnection
 
     /**
      * close this session and get last session key to session_key
-     * Why do it ? Because nested transactions
+     * Why do it ? Because nested transactions.
      */
-    protected function setLastSession() {
+    protected function setLastSession()
+    {
         if ($session = $this->getSession()) {
             $session->endSession();
             unset($this->sessions[$this->session_key]);
@@ -288,10 +292,11 @@ class Connection extends BaseConnection
     }
 
     /**
-     * get now session if it has session
+     * get now session if it has session.
      * @return \MongoDB\Driver\Session|null
      */
-    public function getSession() {
+    public function getSession()
+    {
         return $this->sessions[$this->session_key] ?? null;
     }
 
@@ -302,7 +307,8 @@ class Connection extends BaseConnection
      * @param  array  $bindings
      * @return bool
      */
-    public function statement($query, $bindings = []) {
+    public function statement($query, $bindings = [])
+    {
         return true; //always pretending.
     }
 

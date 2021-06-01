@@ -207,8 +207,8 @@ class RelationsTest extends TestCase
         $client = Client::Where('name', '=', 'Buffet Bar Inc.')->first();
 
         // Assert they are attached
-        $this->assertContains($client->_id, collect($user->client_ids)->pluck("_id"));
-        $this->assertContains($user->_id, collect($client->user_ids)->pluck("_id"));
+        $this->assertContains($client->_id, collect($user->client_ids)->pluck('_id'));
+        $this->assertContains($user->_id, collect($client->user_ids)->pluck('_id'));
         $this->assertCount(2, $user->clients);
         $this->assertCount(2, $client->users);
 
@@ -519,20 +519,20 @@ class RelationsTest extends TestCase
         $user->save();
 
         $this->assertEquals(1, $user->clients()->count());
-        $this->assertEquals([$user->_id], collect($client->user_ids)->pluck("_id")->toArray());
-        $this->assertEquals([$client->_id], collect($user->client_ids)->pluck("_id")->toArray());
+        $this->assertEquals([$user->_id], collect($client->user_ids)->pluck('_id')->toArray());
+        $this->assertEquals([$client->_id], collect($user->client_ids)->pluck('_id')->toArray());
 
         $user = User::where('name', 'John Doe')->first();
         $client = Client::where('name', 'Admins')->first();
         $this->assertEquals(1, $user->clients()->count());
-        $this->assertEquals([$user->_id], collect($client->user_ids)->pluck("_id")->toArray());
-        $this->assertEquals([$client->_id], collect($user->client_ids)->pluck("_id")->toArray());
+        $this->assertEquals([$user->_id], collect($client->user_ids)->pluck('_id')->toArray());
+        $this->assertEquals([$client->_id], collect($user->client_ids)->pluck('_id')->toArray());
 
         $user->clients()->save($client);
         $user->clients()->save($client);
         $user->save();
         $this->assertEquals(1, $user->clients()->count());
-        $this->assertEquals([$user->_id], collect($client->user_ids)->pluck("_id")->toArray());
-        $this->assertEquals([$client->_id], collect($user->client_ids)->pluck("_id")->toArray());
+        $this->assertEquals([$user->_id], collect($client->user_ids)->pluck('_id')->toArray());
+        $this->assertEquals([$client->_id], collect($user->client_ids)->pluck('_id')->toArray());
     }
 }
