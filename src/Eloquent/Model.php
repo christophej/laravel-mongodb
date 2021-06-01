@@ -2,7 +2,7 @@
 
 namespace Jenssegers\Mongodb\Eloquent;
 
-use DateTime;
+use DateTimeInterface;
 use Illuminate\Contracts\Queue\QueueableCollection;
 use Illuminate\Contracts\Queue\QueueableEntity;
 use Illuminate\Database\Eloquent\Model as BaseModel;
@@ -45,6 +45,29 @@ abstract class Model extends BaseModel
     protected $parentRelation;
 
     /**
+     * Custom accessor for the model's id.
+     * @param mixed $value
+     * @return mixed
+     */
+    public function getIdAttribute($value = null)
+    {
+        // If we don't have a value for 'id', we will use the Mongo '_id' value.
+        // This allows us to work with models in a more sql-like way.
+        if (! $value && array_key_exists('_id', $this->attributes)) {
+            $value = $this->attributes['_id'];
+        }
+
+        // Convert ObjectID to string.
+        if ($value instanceof ObjectID) {
+            return (string) $value;
+        } elseif ($value instanceof Binary) {
+            return (string) $value->getData();
+        }
+
+        return $value;
+    }
+
+    /**
      * @inheritdoc
      */
     public function getQualifiedKeyName()
@@ -63,7 +86,7 @@ abstract class Model extends BaseModel
         }
 
         // Let Eloquent convert the value to a DateTime instance.
-        if (!$value instanceof DateTime) {
+        if (! $value instanceof DateTimeInterface) {
             $value = parent::asDateTime($value);
         }
 
@@ -118,7 +141,7 @@ abstract class Model extends BaseModel
      */
     public function getAttribute($key)
     {
-        if (!$key) {
+        if (! $key) {
             return;
         }
 
@@ -128,7 +151,7 @@ abstract class Model extends BaseModel
         }
 
         // This checks for embedded relation support.
-        if (method_exists($this, $key) && !method_exists(self::class, $key)) {
+        if (method_exists($this, $key) && ! method_exists(self::class, $key)) {
             return $this->getRelationValue($key);
         }
 
@@ -214,7 +237,7 @@ abstract class Model extends BaseModel
      */
     public function originalIsEquivalent($key)
     {
-        if (!array_key_exists($key, $this->original)) {
+        if (! array_key_exists($key, $this->original)) {
             return false;
         }
 
@@ -272,9 +295,9 @@ abstract class Model extends BaseModel
             $unique = false;
 
             if (count($parameters) === 3) {
-                list($column, $values, $unique) = $parameters;
+                [$column, $values, $unique] = $parameters;
             } else {
-                list($column, $values) = $parameters;
+                [$column, $values] = $parameters;
             }
 
             // Do batch push by default.
@@ -320,7 +343,7 @@ abstract class Model extends BaseModel
 
         foreach ($values as $value) {
             // Don't add duplicate values when we only want unique values.
-            if ($unique && (!is_array($current) || in_array($value, $current))) {
+            if ($unique && (! is_array($current) || in_array($value, $current))) {
                 continue;
             }
 
@@ -361,7 +384,7 @@ abstract class Model extends BaseModel
      */
     public function getForeignKey()
     {
-        return Str::snake(class_basename($this)) . '_' . ltrim($this->primaryKey, '_');
+        return Str::snake(class_basename($this)).'_'.ltrim($this->primaryKey, '_');
     }
 
     /**
@@ -431,13 +454,13 @@ abstract class Model extends BaseModel
 
             if ($relation instanceof QueueableCollection) {
                 foreach ($relation->getQueueableRelations() as $collectionValue) {
-                    $relations[] = $key . '.' . $collectionValue;
+                    $relations[] = $key.'.'.$collectionValue;
                 }
             }
 
             if ($relation instanceof QueueableEntity) {
                 foreach ($relation->getQueueableRelations() as $entityKey => $entityValue) {
-                    $relations[] = $key . '.' . $entityValue;
+                    $relations[] = $key.'.'.$entityValue;
                 }
             }
         }
@@ -462,7 +485,7 @@ abstract class Model extends BaseModel
 
     /**
      * Checks if column exists on a table.  As this is a document model, just return true.  This also
-     * prevents calls to non-existent function Grammar::compileColumnListing()
+     * prevents calls to non-existent function Grammar::compileColumnListing().
      * @param string $key
      * @return bool
      */
