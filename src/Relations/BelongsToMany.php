@@ -209,23 +209,22 @@ class BelongsToMany extends EloquentBelongsToMany
         if ($id instanceof Model) {
             $model = $id;
             $id = $model->getKey();
-        } else {
-            if ($id instanceof Collection) {
-                $id = $id->modelKeys();
-            }
-
-            $related = $this->newRelatedQuery()->whereIn($this->related->getKeyName(), (array) $id);
-            $filter = [$this->parentKey => $this->parent->getKey()];
-            $pivot_x = [array_merge($attributes, $filter)];
-
-            //TODO: Put this in a transaction
-            $related->pull($this->getForeignKey(), $this->parent->getKey());
-            $related->pull($this->getForeignKey(), $filter);
-            $related->push($this->getForeignKey(), $pivot_x, true);
+        } else if ($id instanceof Collection) {
+            $id = $id->modelKeys();
         }
-        $filter = [$this->parentKey => $id];
+
+        $related = $this->newRelatedQuery()->whereIn($this->related->getKeyName(), (array) $id);
+        $filter = ['_id' => $this->parent->getKey()];
         $pivot_x = [array_merge($attributes, $filter)];
 
+        //TODO: Put this in a transaction
+        $related->pull($this->getForeignKey(), $this->parent->getKey());
+        $related->pull($this->getForeignKey(), $filter);
+        $related->push($this->getForeignKey(), $pivot_x, true);
+
+
+        $filter = ['_id' => $id];
+        $pivot_x = [array_merge($attributes, $filter)];
         //TODO: Put this in a transaction
         $this->parent->pull($this->getRelatedKey(), $id);
         $this->parent->pull($this->getRelatedKey(), $filter);
