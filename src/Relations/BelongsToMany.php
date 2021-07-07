@@ -222,7 +222,6 @@ class BelongsToMany extends EloquentBelongsToMany
         $related->pull($this->getForeignKey(), $filter);
         $related->push($this->getForeignKey(), $pivot_x, true);
 
-
         $filter = ['_id' => $id];
         $pivot_x = [array_merge($attributes, $filter)];
         //TODO: Put this in a transaction
