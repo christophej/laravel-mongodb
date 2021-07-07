@@ -209,7 +209,7 @@ class BelongsToMany extends EloquentBelongsToMany
         if ($id instanceof Model) {
             $model = $id;
             $id = $model->getKey();
-        } else if ($id instanceof Collection) {
+        } elseif ($id instanceof Collection) {
             $id = $id->modelKeys();
         }
 
