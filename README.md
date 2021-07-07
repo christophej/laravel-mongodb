@@ -20,9 +20,10 @@ This package adds functionalities to the Eloquent model and Query builder for Mo
   - [Configuration](#configuration)
   - [Eloquent](#eloquent)
     - [Extending the base model](#extending-the-base-model)
+    - [Extending the Authenticable base model](#extending-the-authenticable-base-model)
     - [Soft Deletes](#soft-deletes)
-    - [Dates](#dates)
     - [Guarding attributes](#guarding-attributes)
+    - [Dates](#dates)
     - [Basic Usage](#basic-usage)
     - [MongoDB-specific operators](#mongodb-specific-operators)
     - [MongoDB-specific Geo operations](#mongodb-specific-geo-operations)
@@ -44,9 +45,10 @@ This package adds functionalities to the Eloquent model and Query builder for Mo
     - [Authentication](#authentication)
     - [Queues](#queues)
       - [Laravel specific](#laravel-specific)
-      - [Lumen specific](#Lumen-specific)
+      - [Lumen specific](#lumen-specific)
   - [Upgrading](#upgrading)
       - [Upgrading from version 2 to 3](#upgrading-from-version-2-to-3)
+  - [Security contact information](#security-contact-information)
 
 Installation
 ------------
@@ -54,21 +56,21 @@ Make sure you have the MongoDB PHP driver installed. You can find installation i
 
 ### Laravel version Compatibility
 
- Laravel  | Package
-:---------|:----------
- 4.2.x    | 2.0.x
- 5.0.x    | 2.1.x
- 5.1.x    | 2.2.x or 3.0.x
- 5.2.x    | 2.3.x or 3.0.x
- 5.3.x    | 3.1.x or 3.2.x
- 5.4.x    | 3.2.x
- 5.5.x    | 3.3.x
- 5.6.x    | 3.4.x
- 5.7.x    | 3.4.x
- 5.8.x    | 3.5.x
- 6.x      | 3.6.x
- 7.x      | 3.7.x
- 8.x      | 3.8.x
+ Laravel  | Package        | Maintained
+:---------|:---------------|:----------
+ 8.x      | 3.8.x          | :white_check_mark:
+ 7.x      | 3.7.x          | :x:
+ 6.x      | 3.6.x          | :white_check_mark:
+ 5.8.x    | 3.5.x          | :x:
+ 5.7.x    | 3.4.x          | :x:
+ 5.6.x    | 3.4.x          | :x:
+ 5.5.x    | 3.3.x          | :x:
+ 5.4.x    | 3.2.x          | :x:
+ 5.3.x    | 3.1.x or 3.2.x | :x:
+ 5.2.x    | 2.3.x or 3.0.x | :x:
+ 5.1.x    | 2.2.x or 3.0.x | :x:
+ 5.0.x    | 2.1.x          | :x:
+ 4.2.x    | 2.0.x          | :x:
 
 Install the package via Composer:
 
@@ -355,6 +357,14 @@ $posts = Post::whereBetween('votes', [1, 100])->get();
 ```php
 $users = User::whereNull('age')->get();
 ```
+
+**whereDate**
+
+```php
+$users = User::whereDate('birthday', '2021-5-12')->get();
+```
+The usage is the same as `whereMonth` / `whereDay` / `whereYear` / `whereTime`
+
 
 **Advanced wheres**
 

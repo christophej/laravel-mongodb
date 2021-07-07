@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -6,7 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Jenssegers\Mongodb\Eloquent\HybridRelations;
 
-class MysqlRole extends Base
+class MysqlRole extends Eloquent
 {
     use HybridRelations;
 
@@ -32,7 +33,7 @@ class MysqlRole extends Base
         /** @var \Illuminate\Database\Schema\MySqlBuilder $schema */
         $schema = Schema::connection('mysql');
 
-        if (!$schema->hasTable('roles')) {
+        if (! $schema->hasTable('roles')) {
             Schema::connection('mysql')->create('roles', function (Blueprint $table) {
                 $table->string('type');
                 $table->string('user_id');

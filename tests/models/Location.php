@@ -1,7 +1,6 @@
 <?php
-declare(strict_types=1);
 
-use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
+declare(strict_types=1);
 
 class Location extends Base
 {
