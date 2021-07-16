@@ -125,7 +125,7 @@ class BelongsToMany extends EloquentBelongsToMany
         return $instance;
     }
 
-    /**
+        /**
      * @inheritdoc
      */
     public function sync($ids, $detaching = true)
@@ -134,63 +134,7 @@ class BelongsToMany extends EloquentBelongsToMany
             return false;
         }
 
-        $changes = [
-            'attached' => [],
-            'detached' => [],
-            'updated' => [],
-        ];
-
-        if ($ids instanceof Collection) {
-            $ids = $ids->modelKeys();
-        }
-
-        // First we need to attach any of the associated models that are not currently
-        // in this joining table. We'll spin through the given IDs, checking to see
-        // if they exist in the array of current ones, and if not we will insert.
-        $current = $this->parent->{$this->getRelatedKey()} ?: [];
-
-        // See issue #256.
-        if ($current instanceof Collection) {
-            $current = $ids->modelKeys();
-        } elseif (is_array($current)) {
-            foreach ($current as $key => $value) {
-                if (is_array($value) && $value['_id']) {
-                    $current[$key] = $value['_id'];
-                }
-            }
-        }
-
-        $records = $this->formatRecordsList($this->parseIds($ids));
-
-        $current = Arr::wrap($current);
-
-        $detach = array_diff($current, array_keys($records));
-
-        // We need to make sure we pass a clean array, so that it is not interpreted
-        // as an associative array.
-        $detach = array_values($detach);
-
-        // Next, we will take the differences of the currents and given IDs and detach
-        // all of the entities that exist in the "current" array but are not in the
-        // the array of the IDs given to the method which will complete the sync.
-        if ($detaching && count($detach) > 0) {
-            $this->detach($detach);
-
-            $changes['detached'] = (array) array_map(function ($v) {
-                return is_numeric($v) ? (int) $v : (string) $v;
-            }, $detach);
-        }
-
-        // Now we are finally ready to attach the new records. Note that we'll disable
-        // touching until after the entire operation is complete so we don't fire a
-        // ton of touch operations until we are totally done syncing the records.
-        $changes = array_merge(
-            $changes, $this->attachNew($records, $current, false)
-        );
-
-        if (count($changes['attached']) || count($changes['updated'])) {
-            $this->touchIfTouching();
-        }
+        $changes = parent::sync($ids, $detaching);
 
         $this->parent->fireModelEvent('pivotSynced', false);
 
