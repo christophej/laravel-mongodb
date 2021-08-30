@@ -487,4 +487,16 @@ abstract class Model extends BaseModel
 
         return parent::__call($method, $parameters);
     }
+
+    /**
+     * Decode the given JSON back into an array or object.
+     *
+     * @param  mixed  $value
+     * @param  bool  $asObject
+     * @return mixed
+     */
+    public function fromJson($value, $asObject = false)
+    {
+        return is_string($value) ? json_decode($value, ! $asObject) : $value;
+    }
 }
