@@ -228,7 +228,7 @@ class RelationsTest extends TestCase
 
     public function testBelongsToManyAttachesExistingModels(): void
     {
-        $user = User::create(['name' => 'John Doe', 'client_ids' => ['1234523']]);
+        $user = User::create(['name' => 'John Doe', 'client_ids' => [['_id' => '1234523']]]);
 
         $clients = [
             Client::create(['name' => 'Pork Pies Ltd.'])->_id,
