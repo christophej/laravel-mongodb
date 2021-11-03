@@ -291,6 +291,28 @@ class BelongsToMany extends EloquentBelongsToMany
 
         return $dictionary;
     }
+    
+    /**
+     * Get the pivot models that are currently attached.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    protected function getCurrentlyAttachedPivots()
+    {
+        return $this
+            ->newPivotQuery()
+            ->where($this->getQualifiedForeignPivotKeyName(), $this->parent->getKey())
+            ->orWhere("{$this->getQualifiedForeignPivotKeyName()}._id", $this->parent->getKey())
+            ->get()
+            ->map(function ($record) {
+                $class = $this->using ?: Pivot::class;
+
+                $pivot = $class::fromRawAttributes($this->parent, (array) $record, $this->getTable(), true);
+                $pivot->{$this->relatedPivotKey} = $record->getKey();
+
+                return $pivot->setPivotKeys($this->foreignPivotKey, $this->relatedPivotKey);
+            });
+    }
 
     /**
      * @inheritdoc
