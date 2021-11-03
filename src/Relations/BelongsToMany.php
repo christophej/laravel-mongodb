@@ -234,7 +234,9 @@ class BelongsToMany extends EloquentBelongsToMany
         }
 
         if (empty($ids)) {
-            $ids = array_map(fn($related) => $related["_id"] ?? $related, $this->parent->{$this->getRelatedKey()});
+            $ids = array_map(function($related) {
+                return $related["_id"] ?? $related;
+            }, $this->parent->{$this->getRelatedKey()});
         } else if ($ids instanceof Model) {
             $ids = (array) $ids->getKey();
         }
