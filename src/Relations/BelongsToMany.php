@@ -125,7 +125,7 @@ class BelongsToMany extends EloquentBelongsToMany
         return $instance;
     }
 
-        /**
+     /**
      * @inheritdoc
      */
     public function sync($ids, $detaching = true)
@@ -234,7 +234,7 @@ class BelongsToMany extends EloquentBelongsToMany
 
         if (empty($ids)) {
             $ids = array_map(function ($related) {
-                return $related["_id"] ?? $related;
+                return $related['_id'] ?? $related;
             }, $this->parent->{$this->getRelatedKey()});
         } elseif ($ids instanceof Model) {
             $ids = (array) $ids->getKey();
