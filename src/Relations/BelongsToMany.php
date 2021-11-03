@@ -125,7 +125,7 @@ class BelongsToMany extends EloquentBelongsToMany
         return $instance;
     }
 
-     /**
+    /**
      * @inheritdoc
      */
     public function sync($ids, $detaching = true)
@@ -293,7 +293,7 @@ class BelongsToMany extends EloquentBelongsToMany
 
         return $dictionary;
     }
-    
+
     /**
      * Get the pivot models that are currently attached.
      *
