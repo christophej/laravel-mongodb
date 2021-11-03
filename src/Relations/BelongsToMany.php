@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany as EloquentBelongsToMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
-use Illuminate\Support\Arr;
 
 class BelongsToMany extends EloquentBelongsToMany
 {
@@ -234,10 +233,10 @@ class BelongsToMany extends EloquentBelongsToMany
         }
 
         if (empty($ids)) {
-            $ids = array_map(function($related) {
+            $ids = array_map(function ($related) {
                 return $related["_id"] ?? $related;
             }, $this->parent->{$this->getRelatedKey()});
-        } else if ($ids instanceof Model) {
+        } elseif ($ids instanceof Model) {
             $ids = (array) $ids->getKey();
         }
 
