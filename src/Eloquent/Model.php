@@ -172,7 +172,7 @@ abstract class Model extends BaseModel
         return parent::setAttribute($key, $value);
     }
 
-    protected function castArrayDates($array_key, $attributes) 
+    protected function castArrayDates($array_key, $attributes)
     {
         foreach (array_keys($attributes) as $key) {
             $new_key = is_numeric($key) ? $array_key : ($array_key.'.'.$key);
