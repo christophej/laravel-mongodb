@@ -209,7 +209,6 @@ abstract class Model extends BaseModel
         // Convert dot-notation dates.
         foreach ($this->getDates() as $key) {
             $res = data_get($attributes, $key);
-            
             if (is_array($res)) {
                 $res = array_filter($res);
             }
