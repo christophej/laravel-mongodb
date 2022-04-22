@@ -172,13 +172,14 @@ abstract class Model extends BaseModel
         return parent::setAttribute($key, $value);
     }
 
-    protected function castArrayDates($array_key, $attributes) {
-        foreach(array_keys($attributes) as $key) {
-            $new_key = is_numeric($key) ? $array_key : ($array_key . '.' . $key);
+    protected function castArrayDates($array_key, $attributes) 
+    {
+        foreach (array_keys($attributes) as $key) {
+            $new_key = is_numeric($key) ? $array_key : ($array_key.'.'.$key);
             $value = $attributes[$key];
             if ($value && $this->isDateAttribute($new_key)) {
                 $attributes[$key] = $this->fromDateTime($value);
-            } elseif(is_array($attributes[$key])) {
+            } elseif (is_array($attributes[$key])) {
                 $attributes[$key] = $this->castArrayDates($new_key, $value);
             }
         }
@@ -216,7 +217,7 @@ abstract class Model extends BaseModel
                 Arr::set($attributes, $key, $this->serializeDate(
                     $this->asDateTime(Arr::get($attributes, $key))
                 ));
-            } elseif (Str::contains($key, '.') && !empty($res)) {
+            } elseif (Str::contains($key, '.') && ! empty($res)) {
                 data_set($attributes, $key, $this->serializeDate(
                     $this->asDateTime(Arr::get($attributes, $key))
                 ));
