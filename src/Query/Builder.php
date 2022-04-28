@@ -550,10 +550,10 @@ class Builder extends BaseBuilder
      */
     public function insert(array $values)
     {
-        if(empty($values)) {
-             return true;
+        if (empty($values)) {
+            return true;
         }
-        
+
         // Since every insert gets treated like a batch insert, we will have to detect
         // if the user is inserting a single document or an array of documents.
         $batch = true;
