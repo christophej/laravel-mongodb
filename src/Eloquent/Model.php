@@ -147,16 +147,10 @@ abstract class Model extends BaseModel
         return parent::getAttributeFromArray($key);
     }
 
-    /**
-     * @inheritdoc
+    /* @inheritdoc
      */
     public function setAttribute($key, $value)
     {
-        //Add casts
-        if ($this->hasCast($key)) {
-            $value = $this->castAttribute($key, $value);
-        }
-        
         // Convert _id to ObjectID.
         if ($key == '_id' && is_string($value)) {
             $builder = $this->newBaseQueryBuilder();
@@ -171,9 +165,26 @@ abstract class Model extends BaseModel
             Arr::set($this->attributes, $key, $value);
 
             return;
+        } elseif (is_array($value)) {
+            $value = $this->castArrayDates($key, $value);
         }
 
         return parent::setAttribute($key, $value);
+    }
+
+    protected function castArrayDates($array_key, $attributes)
+    {
+        foreach (array_keys($attributes) as $key) {
+            $new_key = is_numeric($key) ? $array_key : ($array_key.'.'.$key);
+            $value = $attributes[$key];
+            if ($value && $this->isDateAttribute($new_key)) {
+                $attributes[$key] = $this->fromDateTime($value);
+            } elseif (is_array($attributes[$key])) {
+                $attributes[$key] = $this->castArrayDates($new_key, $value);
+            }
+        }
+
+        return $attributes;
     }
 
     /**
@@ -197,8 +208,18 @@ abstract class Model extends BaseModel
 
         // Convert dot-notation dates.
         foreach ($this->getDates() as $key) {
+            $res = data_get($attributes, $key);
+            if (is_array($res)) {
+                $res = array_filter($res);
+            }
             if (Str::contains($key, '.') && Arr::has($attributes, $key)) {
-                Arr::set($attributes, $key, (string) $this->asDateTime(Arr::get($attributes, $key)));
+                Arr::set($attributes, $key, $this->serializeDate(
+                    $this->asDateTime(Arr::get($attributes, $key))
+                ));
+            } elseif (Str::contains($key, '.') && ! empty($res)) {
+                data_set($attributes, $key, $this->serializeDate(
+                    $this->asDateTime(Arr::get($attributes, $key))
+                ));
             }
         }
 
@@ -486,5 +507,17 @@ abstract class Model extends BaseModel
         }
 
         return parent::__call($method, $parameters);
+    }
+
+    /**
+     * Decode the given JSON back into an array or object.
+     *
+     * @param  mixed  $value
+     * @param  bool  $asObject
+     * @return mixed
+     */
+    public function fromJson($value, $asObject = false)
+    {
+        return is_string($value) ? json_decode($value, ! $asObject) : $value;
     }
 }

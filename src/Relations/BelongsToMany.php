@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany as EloquentBelongsToMany;
-use Illuminate\Support\Arr;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class BelongsToMany extends EloquentBelongsToMany
 {
@@ -125,7 +125,7 @@ class BelongsToMany extends EloquentBelongsToMany
         return $instance;
     }
 
-        /**
+    /**
      * @inheritdoc
      */
     public function sync($ids, $detaching = true)
@@ -232,7 +232,11 @@ class BelongsToMany extends EloquentBelongsToMany
             return false;
         }
 
-        if ($ids instanceof Model) {
+        if (empty($ids)) {
+            $ids = array_map(function ($related) {
+                return $related['_id'] ?? $related;
+            }, $this->parent->{$this->getRelatedKey()});
+        } elseif ($ids instanceof Model) {
             $ids = (array) $ids->getKey();
         }
 
@@ -241,7 +245,7 @@ class BelongsToMany extends EloquentBelongsToMany
         // If associated IDs were passed to the method we will only delete those
         // associations, otherwise all of the association ties will be broken.
         // We'll return the numbers of affected rows when we do the deletes.
-        $ids = (array) $ids;
+        $ids = array_values((array) $ids);
 
         // Detach all ids from the parent model.
         $this->parent->pull($this->getRelatedKey(), $ids);
@@ -288,6 +292,28 @@ class BelongsToMany extends EloquentBelongsToMany
         }
 
         return $dictionary;
+    }
+
+    /**
+     * Get the pivot models that are currently attached.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    protected function getCurrentlyAttachedPivots()
+    {
+        return $this
+            ->newPivotQuery()
+            ->where($this->getQualifiedForeignPivotKeyName(), $this->parent->getKey())
+            ->orWhere("{$this->getQualifiedForeignPivotKeyName()}._id", $this->parent->getKey())
+            ->get()
+            ->map(function ($record) {
+                $class = $this->using ?: Pivot::class;
+
+                $pivot = $class::fromRawAttributes($this->parent, (array) $record, $this->getTable(), true);
+                $pivot->{$this->relatedPivotKey} = $record->getKey();
+
+                return $pivot->setPivotKeys($this->foreignPivotKey, $this->relatedPivotKey);
+            });
     }
 
     /**
