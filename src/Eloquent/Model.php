@@ -140,11 +140,12 @@ abstract class Model extends BaseModel
      * @param  string  $key
      * @return bool
      */
-    public function containsCastableField($key) {
+    public function containsCastableField($key)
+    {
         $attributes = array_merge(array_keys($this->getCasts()), $this->getDates());
 
-        foreach($attributes as $attribute) {
-            if(Str::startsWith($attribute, $key . '.')) {
+        foreach ($attributes as $attribute) {
+            if (Str::startsWith($attribute, $key . '.')) {
                 return true;
             }
         }
@@ -303,7 +304,7 @@ abstract class Model extends BaseModel
         }
 
         // If the value is an array, transform the array to cast subfields if necessar
-        if(is_array($value)) {
+        if (is_array($value)) {
             $value = $this->transformModelArrayValue($key, $value);
         }
 
@@ -332,11 +333,12 @@ abstract class Model extends BaseModel
      * @param  mixed  $value
      * @return mixed
      */
-    protected function transformModelArrayValue($key, $array) {
+    protected function transformModelArrayValue($key, $array)
+    {
         $values = [];
-        foreach($array as $k => $value) {
-            $new_key = is_numeric($k) ? $key : ($key . '.' . $k);
-            if(is_array($value)) {
+        foreach ($array as $k => $value) {
+            $new_key = is_numeric($k) ? $key : ($key.'.'.$k);
+            if (is_array($value)) {
                 $values[$k] = $this->transformModelArrayValue($new_key, $value);
             } else {
                 $values[$k] = $this->transformModelValue($new_key, $value);
