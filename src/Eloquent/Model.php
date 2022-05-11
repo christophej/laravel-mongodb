@@ -145,7 +145,7 @@ abstract class Model extends BaseModel
         $attributes = array_merge(array_keys($this->getCasts()), $this->getDates());
 
         foreach ($attributes as $attribute) {
-            if (Str::startsWith($attribute, $key . '.')) {
+            if (Str::startsWith($attribute, $key.'.')) {
                 return true;
             }
         }
