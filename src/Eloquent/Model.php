@@ -122,7 +122,7 @@ abstract class Model extends BaseModel
         }
 
         // Dot notation support.
-        if (Str::contains($key, '.') && Arr::has($this->attributes, $key)) {
+        if ((Str::contains($key, '.') && Arr::has($this->attributes, $key)) || $this->containsCastableField($key)) {
             return $this->getAttributeValue($key);
         }
 
@@ -132,6 +132,25 @@ abstract class Model extends BaseModel
         }
 
         return parent::getAttribute($key);
+    }
+
+    /**
+     * Determine whether an attribute contains castable subfields.
+     *
+     * @param  string  $key
+     * @return bool
+     */
+    public function containsCastableField($key)
+    {
+        $attributes = array_merge(array_keys($this->getCasts()), $this->getDates());
+
+        foreach ($attributes as $attribute) {
+            if (Str::startsWith($attribute, $key.'.')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -268,6 +287,65 @@ abstract class Model extends BaseModel
 
         return is_numeric($attribute) && is_numeric($original)
             && strcmp((string) $attribute, (string) $original) === 0;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function transformModelValue($key, $value)
+    {
+        // If the attribute has a get mutator, we will call that then return what
+        // it returns as the value, which is useful for transforming values on
+        // retrieval from the model to a form that is more useful for usage.
+        if ($this->hasGetMutator($key)) {
+            return $this->mutateAttribute($key, $value);
+        } elseif ($this->hasAttributeGetMutator($key)) {
+            return $this->mutateAttributeMarkedAttribute($key, $value);
+        }
+
+        // If the value is an array, transform the array to cast subfields if necessar
+        if (is_array($value)) {
+            $value = $this->transformModelArrayValue($key, $value);
+        }
+
+        // If the attribute exists within the cast array, we will convert it to
+        // an appropriate native PHP type dependent upon the associated value
+        // given with the key in the pair. Dayle made this comment line up.
+        if ($this->hasCast($key)) {
+            return $this->castAttribute($key, $value);
+        }
+
+        // If the attribute is listed as a date, we will convert it to a DateTime
+        // instance on retrieval, which makes it quite convenient to work with
+        // date fields without having to create a mutator for each property.
+        if ($value !== null
+            && \in_array($key, $this->getDates(), false)) {
+            return $this->asDateTime($value);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Transform an array model value using mutators, casts, etc.
+     *
+     * @param  string  $key
+     * @param  mixed  $value
+     * @return mixed
+     */
+    protected function transformModelArrayValue($key, $array)
+    {
+        $values = [];
+        foreach ($array as $k => $value) {
+            $new_key = is_numeric($k) ? $key : ($key.'.'.$k);
+            if (is_array($value)) {
+                $values[$k] = $this->transformModelArrayValue($new_key, $value);
+            } else {
+                $values[$k] = $this->transformModelValue($new_key, $value);
+            }
+        }
+
+        return $values;
     }
 
     /**
