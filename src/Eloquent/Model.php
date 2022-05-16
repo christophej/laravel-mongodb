@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\QueueableEntity;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 use Jenssegers\Mongodb\Query\Builder as QueryBuilder;
@@ -186,6 +187,8 @@ abstract class Model extends BaseModel
             return;
         } elseif (is_array($value)) {
             $value = $this->castArrayDates($key, $value);
+        } elseif ($value instanceof Collection) {
+            $value = $this->castArrayDates($key, $value->toArray());
         }
 
         return parent::setAttribute($key, $value);
@@ -597,5 +600,13 @@ abstract class Model extends BaseModel
     public function fromJson($value, $asObject = false)
     {
         return is_string($value) ? json_decode($value, ! $asObject) : $value;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function isJsonCastable($key)
+    {
+        return $this->hasCast($key, ['json', 'encrypted:json']);
     }
 }
