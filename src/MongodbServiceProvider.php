@@ -2,7 +2,8 @@
 
 namespace Jenssegers\Mongodb;
 
-use Illuminate\Bus\{BatchFactory, DatabaseBatchRepository};
+use Illuminate\Bus\BatchFactory;
+use Illuminate\Bus\DatabaseBatchRepository;
 use Illuminate\Support\ServiceProvider;
 use Jenssegers\Mongodb\Bus\MongoDatabaseBatchRepository;
 use Jenssegers\Mongodb\Eloquent\Model;
