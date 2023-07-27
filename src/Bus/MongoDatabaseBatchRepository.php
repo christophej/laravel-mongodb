@@ -5,7 +5,8 @@ namespace Jenssegers\Mongodb\Bus;
 use Closure;
 use Illuminate\Bus\DatabaseBatchRepository;
 
-class MongoDatabaseBatchRepository extends DatabaseBatchRepository {
+class MongoDatabaseBatchRepository extends DatabaseBatchRepository 
+{
     protected function updateAtomicValues(string $batchId, Closure $callback) 
     {
         return $this->connection->transaction(function () use ($batchId, $callback) {
@@ -19,7 +20,7 @@ class MongoDatabaseBatchRepository extends DatabaseBatchRepository {
         });
     }
 
-    public function incrementTotalJobs(string $batchId, int $amount) 
+    public function incrementTotalJobs(string $batchId, int $amount)
     {
         $this->connection->table($this->table)->where('id', $batchId)->update([
             '$set' => [
@@ -28,7 +29,7 @@ class MongoDatabaseBatchRepository extends DatabaseBatchRepository {
             '$inc' => [
                 'total_jobs' => $amount,
                 'pending_jobs' => $amount,
-            ]
+            ],
         ]);
     }
 
