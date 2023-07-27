@@ -9,7 +9,7 @@ class MongoDatabaseBatchRepository extends DatabaseBatchRepository {
     protected function updateAtomicValues(string $batchId, Closure $callback) 
     {
         return $this->connection->transaction(function () use ($batchId, $callback) {
-            $batch = (object)$this->connection->table($this->table)->where('id', $batchId)
+            $batch = (object) $this->connection->table($this->table)->where('id', $batchId)
                         ->lockForUpdate()
                         ->first();
 
@@ -23,7 +23,7 @@ class MongoDatabaseBatchRepository extends DatabaseBatchRepository {
     {
         $this->connection->table($this->table)->where('id', $batchId)->update([
             '$set' => [
-                'finished_at' => null
+                'finished_at' => null,
             ],
             '$inc' => [
                 'total_jobs' => $amount,
@@ -34,6 +34,6 @@ class MongoDatabaseBatchRepository extends DatabaseBatchRepository {
 
     protected function toBatch($batch) 
     {
-        return parent::toBatch((object)$batch);
+        return parent::toBatch((object) $batch);
     }
 }
