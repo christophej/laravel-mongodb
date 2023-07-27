@@ -49,7 +49,7 @@ class BelongsToMany extends EloquentBelongsToMany
             $pivotKey
         );
 
-        return $pivot;
+        return $pivot ?? [];
     }
 
     /**
