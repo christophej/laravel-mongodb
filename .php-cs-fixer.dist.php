@@ -55,7 +55,7 @@ $rules = [
     'method_argument_space' => true,
     'class_attributes_separation' => [
         'elements' => [
-            'method',
+            'method' => 'one',
         ],
     ],
     'visibility_required' => [
