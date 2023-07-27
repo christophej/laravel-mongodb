@@ -119,9 +119,6 @@ $rules = [
     'phpdoc_single_line_var_spacing' => true,
     'phpdoc_summary' => true,
     'phpdoc_trim' => true,
-    'phpdoc_no_alias_tag' => [
-        'type' => 'var',
-    ],
     'phpdoc_types' => true,
     'phpdoc_var_without_name' => true,
     'increment_style' => [
