@@ -5,9 +5,9 @@ namespace Jenssegers\Mongodb\Bus;
 use Closure;
 use Illuminate\Bus\DatabaseBatchRepository;
 
-class MongoDatabaseBatchRepository extends DatabaseBatchRepository 
+class MongoDatabaseBatchRepository extends DatabaseBatchRepository
 {
-    protected function updateAtomicValues(string $batchId, Closure $callback) 
+    protected function updateAtomicValues(string $batchId, Closure $callback)
     {
         return $this->connection->transaction(function () use ($batchId, $callback) {
             $batch = (object) $this->connection->table($this->table)->where('id', $batchId)
@@ -33,7 +33,7 @@ class MongoDatabaseBatchRepository extends DatabaseBatchRepository
         ]);
     }
 
-    protected function toBatch($batch) 
+    protected function toBatch($batch)
     {
         return parent::toBatch((object) $batch);
     }
