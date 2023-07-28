@@ -137,7 +137,7 @@ abstract class Model extends BaseModel
         // since we don't want to treat any of those methods as relationships because
         // they are all intended as helper methods and none of these are relations.
         if (method_exists(self::class, $key)) {
-            return $this->throwMissingAttributeExceptionIfApplicable($key);
+            return;
         }
 
         // Dot notation support.
@@ -147,7 +147,7 @@ abstract class Model extends BaseModel
 
         return $this->isRelation($key) || $this->relationLoaded($key)
                     ? $this->getRelationValue($key)
-                    : $this->throwMissingAttributeExceptionIfApplicable($key);
+                    : null;
     }
 
     /**
