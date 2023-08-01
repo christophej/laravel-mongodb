@@ -145,9 +145,7 @@ abstract class Model extends BaseModel
             return $this->getAttributeValue($key);
         }
 
-        return $this->isRelation($key) || $this->relationLoaded($key)
-                    ? $this->getRelationValue($key)
-                    : null;
+        return $this->getRelationValue($key);
     }
 
     /**
