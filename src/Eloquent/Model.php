@@ -122,30 +122,20 @@ abstract class Model extends BaseModel
             return;
         }
 
-        // If the attribute exists in the attribute array or has a "get" mutator we will
-        // get the attribute's value. Otherwise, we will proceed as if the developers
-        // are asking for a relationship's value. This covers both types of values.
-        if (array_key_exists($key, $this->attributes) ||
-            array_key_exists($key, $this->casts) ||
-            $this->hasGetMutator($key) ||
-            $this->hasAttributeGetMutator($key) ||
-            $this->isClassCastable($key)) {
-            return $this->getAttributeValue($key);
-        }
-
-        // Here we will determine if the model base class itself contains this given key
-        // since we don't want to treat any of those methods as relationships because
-        // they are all intended as helper methods and none of these are relations.
-        if (method_exists(self::class, $key)) {
-            return;
-        }
-
         // Dot notation support.
         if ((Str::contains($key, '.') && Arr::has($this->attributes, $key)) || $this->containsCastableField($key)) {
             return $this->getAttributeValue($key);
         }
 
-        return $this->getRelationValue($key);
+        if (
+            method_exists($this, $key)
+            && ! method_exists(self::class, $key)
+            && ! $this->hasAttributeGetMutator($key)
+        ) {
+            return $this->getRelationValue($key);
+        }
+
+        return parent::getAttribute($key);
     }
 
     /**
