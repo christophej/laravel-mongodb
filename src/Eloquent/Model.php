@@ -2,6 +2,7 @@
 
 namespace Jenssegers\Mongodb\Eloquent;
 
+use \ReflectionMethod;
 use DateTimeInterface;
 use Illuminate\Contracts\Queue\QueueableCollection;
 use Illuminate\Contracts\Queue\QueueableEntity;
@@ -128,11 +129,20 @@ abstract class Model extends BaseModel
         }
 
         // This checks for embedded relation support.
-        if (method_exists($this, $key) && ! method_exists(self::class, $key)) {
+        if ($this->isRelation($key)) {
             return $this->getRelationValue($key);
         }
-        
+
         return parent::getAttribute($key);
+    }
+
+    public function isRelation($key) 
+    {
+        if (method_exists($this, $key) && (new ReflectionMethod($this, $key))->isStatic()) {
+            return false;
+        }    
+
+        return parent::isRelation($key);
     }
 
     /**
