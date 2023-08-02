@@ -127,11 +127,7 @@ abstract class Model extends BaseModel
             return $this->getAttributeValue($key);
         }
 
-        if (
-            method_exists($this, $key)
-            && ! method_exists(self::class, $key)
-            && ! $this->hasAttributeGetMutator($key)
-        ) {
+        if (method_exists($this, $key) && ! method_exists(self::class, $key)) {
             return $this->getRelationValue($key);
         }
 
