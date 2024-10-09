@@ -89,7 +89,8 @@ class BelongsTo extends \Illuminate\Database\Eloquent\Relations\BelongsTo
         // the parents using that dictionary and the primary key of the children.
         $dictionary = [];
         foreach ($results as $result) {
-            $dictionary[$result->getAttribute($owner)] = $result;
+            $dictionary[(string)$result->getAttribute($owner)] = $result;
+
         }
         // Once we have the dictionary constructed, we can loop through all the parents
         // and match back onto their children using these keys of the dictionary and

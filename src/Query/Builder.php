@@ -507,23 +507,6 @@ class Builder extends BaseBuilder
     }
 
     /**
-     * Add a "where all" clause to the query.
-     * @param string $column
-     * @param array $values
-     * @param string $boolean
-     * @param bool $not
-     * @return $this
-     */
-    public function whereAll($column, array $values, $boolean = 'and', $not = false)
-    {
-        $type = 'all';
-
-        $this->wheres[] = compact('column', 'type', 'boolean', 'values', 'not');
-
-        return $this;
-    }
-
-    /**
      * @inheritdoc
      */
     public function whereBetween($column, iterable $values, $boolean = 'and', $not = false)
