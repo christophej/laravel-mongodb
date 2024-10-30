@@ -554,6 +554,8 @@ class Builder extends BaseBuilder
             $values = [$values];
         }
 
+        $values = $this->castDateValues($values);
+
         // Batch insert
         $result = $this->collection->insertMany($values);
 
@@ -565,6 +567,8 @@ class Builder extends BaseBuilder
      */
     public function insertGetId(array $values, $sequence = null)
     {
+        $values = $this->castDateValues($values);
+
         $result = $this->collection->insertOne($values);
 
         if (1 == (int) $result->isAcknowledged()) {
@@ -586,6 +590,8 @@ class Builder extends BaseBuilder
         if (! Str::startsWith(key($values), '$')) {
             $values = ['$set' => $values];
         }
+
+        $values = $this->castDateValues($values);
 
         return $this->performUpdate($values, $options);
     }
@@ -1223,5 +1229,21 @@ class Builder extends BaseBuilder
         }
 
         return parent::__call($method, $parameters);
+    }
+
+    /**
+     * Cast 
+     */
+    public function castDateValues(array|object $values): array|object
+    {
+        foreach ($values as &$value) {
+            if (is_array($value)) {
+                $value = $this->castDateValues($value);
+            } elseif ($value instanceof DateTimeInterface) {
+                $value = new UTCDateTime($value);
+            }
+        }
+
+        return $values;
     }
 }
