@@ -3,14 +3,11 @@
 namespace Jenssegers\Mongodb\Schema;
 
 use Illuminate\Database\Connection;
+use Illuminate\Database\Schema\Blueprint as BaseBlueprint;
 
-class Blueprint extends \Illuminate\Database\Schema\Blueprint
+class Blueprint extends BaseBlueprint
 {
-    /**
-     * The MongoConnection object for this blueprint.
-     * @var \Jenssegers\Mongodb\Connection
-     */
-    protected $connection;
+    use BlueprintLaravelCompatibility;
 
     /**
      * The MongoCollection object for this blueprint.
@@ -23,16 +20,6 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
      * @var array
      */
     protected $columns = [];
-
-    /**
-     * @inheritdoc
-     */
-    public function __construct(Connection $connection, $collection)
-    {
-        $this->connection = $connection;
-
-        $this->collection = $this->connection->getCollection($collection);
-    }
 
     /**
      * @inheritdoc

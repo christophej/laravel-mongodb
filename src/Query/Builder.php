@@ -124,7 +124,7 @@ class Builder extends BaseBuilder
      */
     public function __construct(Connection $connection, Processor $processor)
     {
-        $this->grammar = new Grammar;
+        $this->grammar = new Grammar($connection);
         $this->connection = $connection;
         $this->processor = $processor;
     }
