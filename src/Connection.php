@@ -341,7 +341,7 @@ class Connection extends BaseConnection
      */
     protected function getDefaultQueryGrammar()
     {
-        return new Query\Grammar();
+        return new Query\Grammar($this);
     }
 
     /**
@@ -349,7 +349,7 @@ class Connection extends BaseConnection
      */
     protected function getDefaultSchemaGrammar()
     {
-        return new Schema\Grammar();
+        return new Schema\Grammar($this);
     }
 
     /**
