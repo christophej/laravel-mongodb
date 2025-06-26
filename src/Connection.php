@@ -24,6 +24,8 @@ class Connection extends BaseConnection
      */
     protected $connection;
 
+    protected $session_key;
+
     /**
      * Create a new database connection instance.
      * @param array $config
