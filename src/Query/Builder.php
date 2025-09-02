@@ -871,7 +871,7 @@ class Builder extends BaseBuilder
             }
         }
 
-        return call_user_func_array('parent::where', $params);
+        return parent::where(...$params);
     }
 
     /**
