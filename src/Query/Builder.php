@@ -143,10 +143,10 @@ class Builder extends BaseBuilder
 
     /**
      * Set the cursor timeout in seconds.
-     * @param int $seconds
+     * @param ?int $seconds
      * @return $this
      */
-    public function timeout($seconds)
+    public function timeout($seconds) : static
     {
         $this->timeout = $seconds;
 
