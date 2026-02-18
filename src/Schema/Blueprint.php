@@ -301,4 +301,24 @@ class Blueprint extends BaseBlueprint
         // Dummy.
         return $this;
     }
+
+    /**
+     * Overload the after method to ensure compatibility with Laravel 12's
+     * internal calls while remaining compatible with older versions.
+     *
+     * @param  string  $column
+     * @param  \Closure|null  $callback
+     * @return $this
+     */
+    public function after($column, ?\Closure $callback = null)
+    {
+        $this->after = $column;
+
+        if ($callback instanceof \Closure) {
+            $callback($this);
+            $this->after = null;
+        }
+
+        return $this;
+    }
 }
