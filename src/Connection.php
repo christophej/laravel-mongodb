@@ -6,12 +6,12 @@ use Illuminate\Database\Connection as BaseConnection;
 use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use MongoDB\Client;
-use MongoDB\Driver\ReadConcern;
-use MongoDB\Driver\ReadPreference;
-use MongoDB\Driver\WriteConcern;
+use Jenssegers\Mongodb\Concerns\ManagesTransactions;
 
 class Connection extends BaseConnection
 {
+    use ManagesTransactions;
+
     /**
      * The MongoDB database handler.
      * @var \MongoDB\Database
@@ -112,7 +112,32 @@ class Connection extends BaseConnection
      */
     public function getMongoClient()
     {
-        return $this->connection;
+        // If we already have a client instance, return it.
+        if (property_exists($this, 'connection') && $this->connection instanceof Client) {
+            return $this->connection;
+        }
+
+        // If the connection is not initialized but we do have configuration
+        // available, lazily create the client so methods like
+        // startSession() can be called on test/partial-mock instances.
+        if (property_exists($this, 'config') && is_array($this->config) && ! empty($this->config)) {
+            $dsn = $this->getDsn($this->config);
+            $options = Arr::get($this->config, 'options', []);
+
+            $this->connection = $this->createConnection($dsn, $this->config, $options);
+
+            return $this->connection;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the MongoDB client.
+     */
+    public function getClient(): ?Client
+    {
+        return $this->getMongoClient();
     }
 
     /**
@@ -175,7 +200,7 @@ class Connection extends BaseConnection
      */
     public function disconnect()
     {
-        unset($this->connection);
+        $this->connection = null;
     }
 
     /**
@@ -231,75 +256,6 @@ class Connection extends BaseConnection
         return $this->hasDsnString($config)
             ? $this->getDsnString($config)
             : $this->getHostDsn($config);
-    }
-
-    /**
-     * create a session and start a transaction in session.
-     *
-     * In version 4.0, MongoDB supports multi-document transactions on replica sets.
-     * In version 4.2, MongoDB introduces distributed transactions, which adds support for multi-document transactions on sharded clusters and incorporates the existing support for multi-document transactions on replica sets.
-     * To use transactions on MongoDB 4.2 deployments(replica sets and sharded clusters), clients must use MongoDB drivers updated for MongoDB 4.2.
-     *
-     * @see https://docs.mongodb.com/manual/core/transactions/
-     */
-    public function beginTransaction()
-    {
-        $this->session_key = uniqid();
-        $this->sessions[$this->session_key] = $this->connection->startSession();
-        $this->sessions[$this->session_key]->startTransaction([
-            'readPreference' => new ReadPreference(ReadPreference::RP_PRIMARY),
-            'writeConcern' => new WriteConcern(1),
-            'readConcern' => new ReadConcern(ReadConcern::LOCAL),
-        ]);
-    }
-
-    /**
-     * commit transaction in this session and close this session.
-     */
-    public function commit()
-    {
-        if ($session = $this->getSession()) {
-            $session->commitTransaction();
-            $this->setLastSession();
-        }
-    }
-
-    /**
-     * rollback transaction in this session and close this session.
-     */
-    public function rollBack($toLevel = null)
-    {
-        if ($session = $this->getSession()) {
-            $session->abortTransaction();
-            $this->setLastSession();
-        }
-    }
-
-    /**
-     * close this session and get last session key to session_key
-     * Why do it ? Because nested transactions.
-     */
-    protected function setLastSession()
-    {
-        if ($session = $this->getSession()) {
-            $session->endSession();
-            unset($this->sessions[$this->session_key]);
-            if (empty($this->sessions)) {
-                $this->session_key = null;
-            } else {
-                end($this->sessions);
-                $this->session_key = key($this->sessions);
-            }
-        }
-    }
-
-    /**
-     * get now session if it has session.
-     * @return \MongoDB\Driver\Session|null
-     */
-    public function getSession()
-    {
-        return $this->sessions[$this->session_key] ?? null;
     }
 
     /**
