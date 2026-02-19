@@ -200,7 +200,6 @@ class Connection extends BaseConnection
      */
     public function disconnect()
     {
-        // unset($this->connection);
         $this->connection = null;
     }
 
